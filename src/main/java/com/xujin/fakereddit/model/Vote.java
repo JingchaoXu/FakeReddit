@@ -1,11 +1,15 @@
 package com.xujin.fakereddit.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder

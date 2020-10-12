@@ -1,6 +1,8 @@
 package com.xujin.fakereddit.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,8 +11,9 @@ import java.time.Instant;
 
 
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 @Entity
+@Data
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
