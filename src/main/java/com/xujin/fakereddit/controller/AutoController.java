@@ -4,10 +4,7 @@ import com.xujin.fakereddit.dto.RegisterRequest;
 import com.xujin.fakereddit.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,5 +21,11 @@ public class AutoController {
         System.out.println("Here is signing up");
         authService.signUp(registerRequest);
         return new ResponseEntity<>("User Register Successfully", HttpStatus.OK);
+    }
+
+    @GetMapping("accountVerification/{token}")
+    public ResponseEntity<String> verifyAccount(@PathVariable String token){
+        authService.verifyAccount(token);
+        return new ResponseEntity<>("Account Activated Successfully", HttpStatus.OK);
     }
 }
