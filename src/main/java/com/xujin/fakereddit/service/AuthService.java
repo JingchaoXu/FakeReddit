@@ -52,6 +52,7 @@ public class AuthService {
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);
+        verificationToken.setExpiryDate(Instant.now());
 
         verificationTokenRepository.save(verificationToken);
         return token;

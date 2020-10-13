@@ -21,6 +21,7 @@ public class AutoController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody RegisterRequest registerRequest){
+        System.out.println("Here is signing up");
         authService.signUp(registerRequest);
         return new ResponseEntity<>("User Register Successfully", HttpStatus.OK);
     }
