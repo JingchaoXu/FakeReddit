@@ -24,8 +24,8 @@ public class Subreddit {
     @NotBlank(message = "Community name is required")
     private String name;
 
-    @NotBlank(message = "Discription is required")
-    private String sescription;
+    @NotBlank(message = "Description is required")
+    private String description;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Post> posts ;
