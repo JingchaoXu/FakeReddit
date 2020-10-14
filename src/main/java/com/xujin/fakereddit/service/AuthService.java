@@ -1,5 +1,7 @@
 package com.xujin.fakereddit.service;
 
+import com.xujin.fakereddit.dto.AuthenticationResponse;
+import com.xujin.fakereddit.dto.LoginRequest;
 import com.xujin.fakereddit.dto.RegisterRequest;
 import com.xujin.fakereddit.exception.SpringRedditException;
 import com.xujin.fakereddit.model.NotificationEmail;
@@ -7,7 +9,12 @@ import com.xujin.fakereddit.model.User;
 import com.xujin.fakereddit.model.VerificationToken;
 import com.xujin.fakereddit.repository.UserRepository;
 import com.xujin.fakereddit.repository.VerificationTokenRepository;
+import com.xujin.fakereddit.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,19 +24,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, VerificationTokenRepository verificationTokenRepository, MailService mailService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, VerificationTokenRepository verificationTokenRepository, MailService mailService, AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.verificationTokenRepository = verificationTokenRepository;
         this.mailService = mailService;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
     }
 
     @Transactional
@@ -72,5 +84,14 @@ public class AuthService {
         User user = userRepository.findByUsername(username).orElseThrow(()->new SpringRedditException("User not found with name "+username));
         user.setEnabled(true);
         userRepository.save(user);
+    }
+
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+       Authentication authentication = authenticationManager.authenticate (new UsernamePasswordAuthenticationToken(
+               loginRequest.getUsername(), loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtProvider.generateToken(authentication);
+        return new AuthenticationResponse(token,loginRequest.getUsername());
     }
 }
