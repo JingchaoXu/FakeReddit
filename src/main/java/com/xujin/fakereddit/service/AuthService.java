@@ -92,7 +92,8 @@ public class AuthService {
     }
 
     public AuthenticationResponse login(LoginRequest loginRequest) {
-       Authentication authentication = authenticationManager.authenticate (new UsernamePasswordAuthenticationToken(
+        System.out.println("This is login");
+        Authentication authentication = authenticationManager.authenticate (new UsernamePasswordAuthenticationToken(
                loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
